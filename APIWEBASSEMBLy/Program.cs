@@ -1,4 +1,5 @@
 using APIWEBASSEMBLy;
+using APIWEBASSEMBLy.Data.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -7,5 +8,13 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+
+builder.Services.AddHttpClient("NODE_API", client =>
+{
+    client.BaseAddress = new Uri("https://api-6df5.onrender.com/");
+});
+
+builder.Services.AddScoped<PostProductService>();
 
 await builder.Build().RunAsync();

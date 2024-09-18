@@ -1,0 +1,76 @@
+﻿@page "/productosAMMA"
+@inject PostProductService productService
+
+<h3>Productos</h3>
+<h4>Agregar nuevo Producto</h4>
+
+<EditForm Model="newproduct" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Nombre</label>
+        <InputText @bind-Value="newproduct.nombreAMMA" class="form-control" />
+        <ValidationMessage For="@(() => newproduct.nombreAMMA)" />
+    </div>
+
+    <div class="form-group">
+        <label>Descripcion</label>
+        <InputText @bind-Value="newproduct.descripcionAMMA" class="form-control" />
+        <ValidationMessage For="@(() => newproduct.descripcionAMMA)" />
+    </div>
+
+    <div class="form-group">
+        <label>Precio</label>
+        <InputNumber @bind-Value="newproduct.precio" class="form-control" />
+        <ValidationMessage For="@(() => newproduct.precio)" />
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Agregar Producto</button>
+</EditForm>
+
+@if (productosAMMA == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in productosAMMA)
+            {
+                <tr>
+                    <td>@product.nombreAMMA</td>
+                    <td>@product.descripcionAMMA</td>
+                    <td>@product.precio</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<PostProductDTO> productosAMMA;
+
+    private PostProductDTO newproduct = new PostProductDTO();
+
+    protected override async Task OnInitializedAsync()
+    {
+        productosAMMA = await productService.GetPostAsync(); // Assuming the method is named GetPostsAsync
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var createProduct = await productService.CreatePostAsync(newproduct);
+        productosAMMA.Add(createProduct);
+        newproduct = new PostProductDTO(); // Reinicia el formulario
+    }
+}
